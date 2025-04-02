@@ -13,24 +13,81 @@
             font-size: 2rem;
             margin: 10px;
         }
+        .hidden {
+            display: none;
+        }
+        .login-container {
+            margin-top: 50px;
+        }
     </style>
 </head>
 <body>
     <h1>Welcome to the Slot Machine Game!</h1>
-    <div class="slot" id="slot1">🍒</div>
-    <div class="slot" id="slot2">🍋</div>
-    <div class="slot" id="slot3">🍊</div>
-    <br>
-    <button id="spinBtn">Spin</button>
-    <p id="result"></p>
-    <br>
-    <button id="playAgainBtn" style="display:none;">Play Again</button>
 
-    <script>
-        // Define the symbols for the slot machine
+    <!-- Login Form -->
+    <div id="login-container" class="login-container">
+        <h2>Please log in with Google</h2>
+        <button id="google-sign-in-btn">Log In with Google</button>
+        <p id="login-error" style="color: red; display: none;">Login failed. Please try again.</p>
+    </div>
+
+    <!-- Slot Machine Game (hidden initially) -->
+    <div id="game-container" class="hidden">
+        <div class="slot" id="slot1">🍒</div>
+        <div class="slot" id="slot2">🍋</div>
+        <div class="slot" id="slot3">🍊</div>
+        <br>
+        <button id="spinBtn">Spin</button>
+        <p id="result"></p>
+        <br>
+        <button id="playAgainBtn" style="display:none;">Play Again</button>
+    </div>
+
+    <!-- Firebase Config and Scripts -->
+    <script type="module">
+        // Import the functions you need from the Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
+
+        // Your Firebase configuration (replace with your actual Firebase credentials)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMbkIMtbqEP7wunVMrq7A0aYabUTQe5cg",
+            authDomain: "gamer-9907b.firebaseapp.com",
+            projectId: "gamer-9907b",
+            storageBucket: "gamer-9907b.firebasestorage.app",
+            messagingSenderId: "860341931432",
+            appId: "1:860341931432:web:dbf282da7be184fc0d619d",
+            measurementId: "G-M91X3MP9GH"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Function to handle Google login
+        function googleSignIn() {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    // Hide login container and show game container
+                    document.getElementById('login-container').classList.add('hidden');
+                    document.getElementById('game-container').classList.remove('hidden');
+                    console.log("Logged in as:", user.displayName);
+                })
+                .catch((error) => {
+                    console.error("Login failed:", error);
+                    document.getElementById('login-error').style.display = 'inline';
+                });
+        }
+
+        // Event listener for Google Sign-In button
+        document.getElementById('google-sign-in-btn').addEventListener('click', googleSignIn);
+
+        // Slot machine game logic
         const symbols = ["🍒", "🍋", "🍊", "🍉", "⭐", "7️⃣"];
-
-        // Function to spin the slots
         function spinSlots() {
             return [
                 symbols[Math.floor(Math.random() * symbols.length)],
@@ -39,12 +96,10 @@
             ];
         }
 
-        // Function to check if the player won
         function checkWin(spinResult) {
             return new Set(spinResult).size === 1;
         }
 
-        // Function to handle the game logic
         function playGame() {
             const spinResult = spinSlots();
             document.getElementById('slot1').textContent = spinResult[0];
@@ -58,7 +113,7 @@
             document.getElementById('playAgainBtn').style.display = 'inline-block';
         }
 
-        // Event listeners for the buttons
+        // Event listeners for the slot machine buttons
         document.getElementById('spinBtn').addEventListener('click', playGame);
         document.getElementById('playAgainBtn').addEventListener('click', function() {
             document.getElementById('spinBtn').style.display = 'inline-block';
