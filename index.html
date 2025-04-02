@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slot Machine Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .slot {
+            font-size: 2rem;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to the Slot Machine Game!</h1>
+    <div class="slot" id="slot1">🍒</div>
+    <div class="slot" id="slot2">🍋</div>
+    <div class="slot" id="slot3">🍊</div>
+    <br>
+    <button id="spinBtn">Spin</button>
+    <p id="result"></p>
+    <br>
+    <button id="playAgainBtn" style="display:none;">Play Again</button>
+
+    <script>
+        // Define the symbols for the slot machine
+        const symbols = ["🍒", "🍋", "🍊", "🍉", "⭐", "7️⃣"];
+
+        // Function to spin the slots
+        function spinSlots() {
+            return [
+                symbols[Math.floor(Math.random() * symbols.length)],
+                symbols[Math.floor(Math.random() * symbols.length)],
+                symbols[Math.floor(Math.random() * symbols.length)]
+            ];
+        }
+
+        // Function to check if the player won
+        function checkWin(spinResult) {
+            return new Set(spinResult).size === 1;
+        }
+
+        // Function to handle the game logic
+        function playGame() {
+            const spinResult = spinSlots();
+            document.getElementById('slot1').textContent = spinResult[0];
+            document.getElementById('slot2').textContent = spinResult[1];
+            document.getElementById('slot3').textContent = spinResult[2];
+
+            const resultMessage = checkWin(spinResult) ? "You win! All symbols match!" : "Sorry, no win. Better luck next time!";
+            document.getElementById('result').textContent = resultMessage;
+
+            document.getElementById('spinBtn').style.display = 'none';
+            document.getElementById('playAgainBtn').style.display = 'inline-block';
+        }
+
+        // Event listeners for the buttons
+        document.getElementById('spinBtn').addEventListener('click', playGame);
+        document.getElementById('playAgainBtn').addEventListener('click', function() {
+            document.getElementById('spinBtn').style.display = 'inline-block';
+            document.getElementById('playAgainBtn').style.display = 'none';
+            document.getElementById('result').textContent = '';
+        });
+    </script>
+</body>
+</html>
