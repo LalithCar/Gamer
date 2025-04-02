@@ -8,10 +8,35 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .slot-container {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
         }
         .slot {
-            font-size: 2rem;
-            margin: 10px;
+            font-size: 4rem;
+            margin: 0 10px;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .hidden {
             display: none;
@@ -19,38 +44,79 @@
         .login-container {
             margin-top: 50px;
         }
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #3367d6;
+        }
+        #playAgainBtn {
+            background-color: #34a853;
+        }
+        #playAgainBtn:hover {
+            background-color: #2e8b57;
+        }
+        #result {
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 30px;
+        }
+        .user-info {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
-    <h1>Welcome to the Slot Machine Game!</h1>
+    <div class="container">
+        <h1>Welcome to the Slot Machine Game!</h1>
 
-    <!-- Login Form -->
-    <div id="login-container" class="login-container">
-        <h2>Please log in with Google</h2>
-        <button id="google-sign-in-btn">Log In with Google</button>
-        <p id="login-error" style="color: red; display: none;">Login failed. Please try again.</p>
-    </div>
+        <!-- Login Form -->
+        <div id="login-container" class="login-container">
+            <h2>Please log in to play</h2>
+            <button id="google-sign-in-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48" style="vertical-align: middle; margin-right: 10px;">
+                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                </svg>
+                Log In with Google
+            </button>
+            <p id="login-error" style="color: red; display: none;">Login failed. Please try again.</p>
+        </div>
 
-    <!-- Slot Machine Game (hidden initially) -->
-    <div id="game-container" class="hidden">
-        <div class="slot" id="slot1">🍒</div>
-        <div class="slot" id="slot2">🍋</div>
-        <div class="slot" id="slot3">🍊</div>
-        <br>
-        <button id="spinBtn">Spin</button>
-        <p id="result"></p>
-        <br>
-        <button id="playAgainBtn" style="display:none;">Play Again</button>
+        <!-- Slot Machine Game (hidden initially) -->
+        <div id="game-container" class="hidden">
+            <div class="user-info" id="user-display"></div>
+            <div class="slot-container">
+                <div class="slot" id="slot1">🍒</div>
+                <div class="slot" id="slot2">🍋</div>
+                <div class="slot" id="slot3">🍊</div>
+            </div>
+            <button id="spinBtn">Spin</button>
+            <p id="result"></p>
+            <button id="playAgainBtn" style="display:none;">Play Again</button>
+            <button id="logoutBtn">Logout</button>
+        </div>
     </div>
 
     <!-- Firebase Config and Scripts -->
     <script type="module">
         // Import the functions you need from the Firebase SDK
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 
-        // Your Firebase configuration (replace with your actual Firebase credentials)
+        // Your Firebase configuration (using your existing credentials)
         const firebaseConfig = {
             apiKey: "AIzaSyAMbkIMtbqEP7wunVMrq7A0aYabUTQe5cg",
             authDomain: "gamer-9907b.firebaseapp.com",
@@ -63,7 +129,13 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+        try {
+            const analytics = getAnalytics(app);
+            console.log("Analytics initialized successfully");
+        } catch (e) {
+            console.log("Analytics initialization skipped:", e.message);
+        }
+        
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
@@ -75,16 +147,35 @@
                     // Hide login container and show game container
                     document.getElementById('login-container').classList.add('hidden');
                     document.getElementById('game-container').classList.remove('hidden');
+                    
+                    // Display user info
+                    document.getElementById('user-display').textContent = `Logged in as: ${user.displayName || user.email}`;
                     console.log("Logged in as:", user.displayName);
                 })
                 .catch((error) => {
                     console.error("Login failed:", error);
-                    document.getElementById('login-error').style.display = 'inline';
+                    document.getElementById('login-error').style.display = 'block';
                 });
+        }
+
+        // Function to handle logout
+        function handleLogout() {
+            signOut(auth).then(() => {
+                // Hide game container and show login container
+                document.getElementById('login-container').classList.remove('hidden');
+                document.getElementById('game-container').classList.add('hidden');
+                document.getElementById('login-error').style.display = 'none';
+                console.log("Logged out successfully");
+            }).catch((error) => {
+                console.error("Logout failed:", error);
+            });
         }
 
         // Event listener for Google Sign-In button
         document.getElementById('google-sign-in-btn').addEventListener('click', googleSignIn);
+        
+        // Event listener for Logout button
+        document.getElementById('logoutBtn').addEventListener('click', handleLogout);
 
         // Slot machine game logic
         const symbols = ["🍒", "🍋", "🍊", "🍉", "⭐", "7️⃣"];
@@ -101,24 +192,65 @@
         }
 
         function playGame() {
-            const spinResult = spinSlots();
-            document.getElementById('slot1').textContent = spinResult[0];
-            document.getElementById('slot2').textContent = spinResult[1];
-            document.getElementById('slot3').textContent = spinResult[2];
+            // Disable spin button during animation
+            document.getElementById('spinBtn').disabled = true;
+            
+            // Animation effect
+            let counter = 0;
+            const slots = [
+                document.getElementById('slot1'),
+                document.getElementById('slot2'),
+                document.getElementById('slot3')
+            ];
+            
+            const spinInterval = setInterval(() => {
+                slots.forEach(slot => {
+                    slot.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                });
+                
+                counter++;
+                if (counter >= 10) {
+                    clearInterval(spinInterval);
+                    finalizeSpin();
+                }
+            }, 100);
+            
+            function finalizeSpin() {
+                const spinResult = spinSlots();
+                document.getElementById('slot1').textContent = spinResult[0];
+                document.getElementById('slot2').textContent = spinResult[1];
+                document.getElementById('slot3').textContent = spinResult[2];
 
-            const resultMessage = checkWin(spinResult) ? "You win! All symbols match!" : "Sorry, no win. Better luck next time!";
-            document.getElementById('result').textContent = resultMessage;
+                const isWin = checkWin(spinResult);
+                const resultMessage = isWin 
+                    ? "🎉 You win! All symbols match! 🎉" 
+                    : "Sorry, no win. Better luck next time!";
+                document.getElementById('result').textContent = resultMessage;
+                document.getElementById('result').style.color = isWin ? '#34a853' : '#ea4335';
 
-            document.getElementById('spinBtn').style.display = 'none';
-            document.getElementById('playAgainBtn').style.display = 'inline-block';
+                document.getElementById('spinBtn').style.display = 'none';
+                document.getElementById('playAgainBtn').style.display = 'inline-block';
+            }
         }
 
         // Event listeners for the slot machine buttons
         document.getElementById('spinBtn').addEventListener('click', playGame);
         document.getElementById('playAgainBtn').addEventListener('click', function() {
             document.getElementById('spinBtn').style.display = 'inline-block';
+            document.getElementById('spinBtn').disabled = false;
             document.getElementById('playAgainBtn').style.display = 'none';
             document.getElementById('result').textContent = '';
+        });
+
+        // Check if user is already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                document.getElementById('login-container').classList.add('hidden');
+                document.getElementById('game-container').classList.remove('hidden');
+                document.getElementById('user-display').textContent = `Logged in as: ${user.displayName || user.email}`;
+                console.log("Already logged in as:", user.displayName);
+            }
         });
     </script>
 </body>
